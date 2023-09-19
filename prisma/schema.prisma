@@ -15,7 +15,7 @@ model Product {
   shortDescription String?  @db.Text
   sku              String   @unique
   unitsInStock     Int
-  price            Float
+  price            Decimal
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   orders           Order[]
