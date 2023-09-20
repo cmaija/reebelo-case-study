@@ -1,8 +1,9 @@
 "use client"
+import { Product } from "@prisma/client"
 import React, { createContext, useContext, useEffect, useReducer } from "react"
 
 interface Item {
-  id: number
+  product: Product
   units: number
 }
 
@@ -92,16 +93,10 @@ export const CartContextProvider = ({
 }: {
   children: React.ReactNode
 }) => {
-  const [state, dispatch] = useReducer(cartReducer, initialState)
+  const [state, dispatch] = useReducer(cartReducer, initialState, initializer)
 
   useEffect(() => {
-    const savedCart = window.localStorage.getItem("CART_STATE")
-    if (savedCart) {
-      dispatch({ type: ActionTypes.Load, payload: JSON.parse(savedCart) })
-    }
-  }, [])
-
-  useEffect(() => {
+    if (!state) return
     window.localStorage.setItem("CART_STATE", JSON.stringify(state))
   }, [state])
 
