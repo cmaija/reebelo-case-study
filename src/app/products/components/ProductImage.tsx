@@ -6,7 +6,8 @@ interface ProductImageProps {
   title: string
 }
 export default function ProductImage({ url, title }: ProductImageProps) {
-  let tempUrl = "sample"
+  let tempUrl =
+    "https://res.cloudinary.com/dintrgbvw/image/upload/v1695238530/sample.jpg"
   if (tempUrl && tempUrl.length) {
     return (
       <CldImage
