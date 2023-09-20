@@ -20,9 +20,11 @@ const initialState: Cart = {
 }
 
 export const initializer = (initialValue = initialState) => {
-  const cartState = localStorage.getItem("CART_STATE")
-  if (cartState && cartState !== null) {
-    return JSON.parse(cartState)
+  if (typeof window !== undefined) {
+    const cartState = localStorage.getItem("CART_STATE")
+    if (cartState && cartState !== null) {
+      return JSON.parse(cartState)
+    }
   }
   return initialValue
 }
@@ -96,7 +98,7 @@ export const CartContextProvider = ({
   const [state, dispatch] = useReducer(cartReducer, initialState, initializer)
 
   useEffect(() => {
-    if (!state) return
+    if (!state || typeof window === undefined) return
     window.localStorage.setItem("CART_STATE", JSON.stringify(state))
   }, [state])
 
