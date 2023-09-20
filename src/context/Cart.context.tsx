@@ -1,5 +1,5 @@
 "use client"
-import React, { createContext, useContext, useReducer } from "react"
+import React, { createContext, useContext, useEffect, useReducer } from "react"
 
 interface Item {
   id: number
@@ -18,6 +18,14 @@ const initialState: Cart = {
   items: [],
 }
 
+export const initializer = (initialValue = initialState) => {
+  const cartState = localStorage.getItem("CART_STATE")
+  if (cartState && cartState !== null) {
+    return JSON.parse(cartState)
+  }
+  return initialValue
+}
+
 type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined
     ? {
@@ -33,12 +41,14 @@ export enum ActionTypes {
   Add = "ADD_ITEM",
   Delete = "DELETE_ITEM",
   Update = "UPDATE_ITEM",
+  Load = "LOAD_CART",
 }
 
 type CartPayload = {
   [ActionTypes.Add]: Item
   [ActionTypes.Delete]: Item
   [ActionTypes.Update]: Item
+  [ActionTypes.Load]: Cart
 }
 
 export type CartActions = ActionMap<CartPayload>[keyof ActionMap<CartPayload>]
@@ -60,6 +70,10 @@ const cartReducer = (state: Cart, action: any): Cart => {
       )
       return { ...state, items: updatedItems }
 
+    case ActionTypes.Load:
+      const { items } = action.payload
+      return { items }
+
     default:
       return state
   }
@@ -79,6 +93,17 @@ export const CartContextProvider = ({
   children: React.ReactNode
 }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState)
+
+  useEffect(() => {
+    const savedCart = window.localStorage.getItem("CART_STATE")
+    if (savedCart) {
+      dispatch({ type: ActionTypes.Load, payload: JSON.parse(savedCart) })
+    }
+  }, [])
+
+  useEffect(() => {
+    window.localStorage.setItem("CART_STATE", JSON.stringify(state))
+  }, [state])
 
   return (
     <CartContext.Provider value={{ state, dispatch }}>

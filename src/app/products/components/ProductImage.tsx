@@ -8,7 +8,6 @@ interface ProductImageProps {
 export default function ProductImage({ url, title }: ProductImageProps) {
   let tempUrl = "sample"
   if (tempUrl && tempUrl.length) {
-    console.log("url", url)
     return (
       <CldImage
         width="400"

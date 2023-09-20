@@ -7,7 +7,9 @@ interface Props {
 }
 export default function AddToCartButton({ itemID }: Props) {
   const { state, dispatch } = useCartContext()
-  function clicked() {
+  function clicked(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.preventDefault()
+    console.log("button clicked")
     dispatch({ type: ActionTypes.Add, payload: { id: itemID, units: 1 } })
   }
   return (
