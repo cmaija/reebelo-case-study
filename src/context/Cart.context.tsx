@@ -1,22 +1,31 @@
 "use client"
-import { Product } from "@prisma/client"
-import React, { createContext, useContext, useEffect, useReducer } from "react"
+import { Product } from "@/lib/interfaces"
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+} from "react"
 
-interface Item {
+export interface Item {
   product: Product
   units: number
 }
 
 interface Cart {
-  items: Item[]
+  items: {
+    [productId: string]: Item
+  }
 }
 interface CartContext {
   state: Cart
   dispatch: React.Dispatch<any>
+  itemsCount: number
 }
 
 const initialState: Cart = {
-  items: [],
+  items: {},
 }
 
 export const initializer = (initialValue = initialState) => {
@@ -43,40 +52,62 @@ type ActionMap<M extends { [index: string]: any }> = {
 export enum ActionTypes {
   Add = "ADD_ITEM",
   Delete = "DELETE_ITEM",
-  Update = "UPDATE_ITEM",
+  DeleteItem = "DELETE_ITEM_BY_ID",
   Load = "LOAD_CART",
+  UpdateItemCount = "UPDATE_ITEM_COUNT",
 }
 
 type CartPayload = {
   [ActionTypes.Add]: Item
-  [ActionTypes.Delete]: Item
-  [ActionTypes.Update]: Item
+  [ActionTypes.Delete]: Product
+  [ActionTypes.DeleteItem]: Product
+  [ActionTypes.UpdateItemCount]: Item
   [ActionTypes.Load]: Cart
 }
 
 export type CartActions = ActionMap<CartPayload>[keyof ActionMap<CartPayload>]
 
-const cartReducer = (state: Cart, action: any): Cart => {
+const cartReducer = (state: Cart, action: CartActions): Cart => {
+  let newState
   switch (action.type) {
     case ActionTypes.Add:
-      return { ...state, items: [...state.items, action.payload] }
+      newState = structuredClone(state)
+      let oldItem = structuredClone(newState.items[action.payload.product.id])
+      if (oldItem) {
+        newState.items[action.payload.product.id] = {
+          ...oldItem,
+          units: oldItem.units + action.payload.units,
+        }
+      } else {
+        newState.items[action.payload.product.id] = {
+          product: action.payload.product,
+          units: action.payload.units,
+        }
+      }
+      return newState
 
     case ActionTypes.Delete:
-      return {
-        ...state,
-        items: state.items.filter((item) => item !== action.payload),
+      newState = structuredClone(state)
+      if (newState.items[action.payload.id]) {
+        newState.items[action.payload.id].units > 1
+          ? newState.items[action.payload.id].units--
+          : delete newState.items[action.payload.id]
       }
+      return newState
 
-    case ActionTypes.Update:
-      const updatedItems = state.items.map((item) =>
-        item === action.payload ? action.payload.newItem : item
-      )
-      return { ...state, items: updatedItems }
+    case ActionTypes.DeleteItem:
+      newState = structuredClone(state)
+      delete newState.items[action.payload.id]
+      return newState
 
     case ActionTypes.Load:
       const { items } = action.payload
       return { items }
 
+    case ActionTypes.UpdateItemCount:
+      newState = structuredClone(state)
+      newState.items[action.payload.product.id] = action.payload
+      return newState
     default:
       return state
   }
@@ -85,10 +116,18 @@ const cartReducer = (state: Cart, action: any): Cart => {
 export const CartContext = createContext<{
   state: Cart
   dispatch: React.Dispatch<CartActions>
+  itemsCount: number
 }>({
   state: initialState,
   dispatch: () => null,
+  itemsCount: 0,
 })
+
+function countItems(cart: Cart) {
+  return Object.values(cart.items).reduce((count: number, item: Item) => {
+    return count + item.units
+  }, 0)
+}
 
 export const CartContextProvider = ({
   children,
@@ -96,6 +135,7 @@ export const CartContextProvider = ({
   children: React.ReactNode
 }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState, initializer)
+  const itemsCount = useMemo(() => countItems(state), [state.items])
 
   useEffect(() => {
     if (!state || typeof window === "undefined" || !window?.localStorage) return
@@ -103,7 +143,7 @@ export const CartContextProvider = ({
   }, [state])
 
   return (
-    <CartContext.Provider value={{ state, dispatch }}>
+    <CartContext.Provider value={{ state, dispatch, itemsCount }}>
       {children}
     </CartContext.Provider>
   )

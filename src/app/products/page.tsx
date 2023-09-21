@@ -1,5 +1,5 @@
 import { getProducts } from "@/utils/get-products"
-import { Product } from "@prisma/client"
+import { Product } from "@/lib/interfaces"
 import ProductCard from "./components/ProductCard"
 
 export default async function Products() {

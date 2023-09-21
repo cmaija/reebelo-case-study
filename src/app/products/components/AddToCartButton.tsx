@@ -1,7 +1,8 @@
 "use client"
 
 import { ActionTypes, useCartContext } from "@/context/Cart.context"
-import { Product } from "@prisma/client"
+import { Product } from "@/lib/interfaces"
+import { PlusIcon } from "@radix-ui/react-icons"
 
 interface Props {
   product: Product
@@ -15,7 +16,7 @@ export default function AddToCartButton({ product }: Props) {
   }
   return (
     <button onClick={clicked} title="Quick add to cart">
-      +
+      <PlusIcon />
     </button>
   )
 }

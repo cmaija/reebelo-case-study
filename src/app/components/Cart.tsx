@@ -1,18 +1,20 @@
 "use client"
 import { useCartContext } from "@/context/Cart.context"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import CartDetails from "./CartDetails"
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 export default function Cart() {
-  const { state, dispatch } = useCartContext()
-  const [cartShowing, setCartShowing] = useState(false)
+  const { itemsCount } = useCartContext()
+  const [displayedCount, setDisplayedCount] = useState(0)
 
-  function toggleCartShowing() {
-    setCartShowing(!cartShowing)
-  }
+  useEffect(() => {
+    setDisplayedCount(itemsCount)
+  }, [itemsCount])
+
   return (
-    <div className="relative">
-      {cartShowing && <CartDetails onClose={() => setCartShowing(false)} />}
-      <button onClick={toggleCartShowing}>Cart: {state.items.length}</button>
-    </div>
+    <AlertDialog>
+      <CartDetails />
+      <AlertDialogTrigger>Cart: {displayedCount}</AlertDialogTrigger>
+    </AlertDialog>
   )
 }
