@@ -2,31 +2,13 @@
 import { ActionTypes, Item, useCartContext } from "@/context/Cart.context"
 import { useEffect, useMemo, useState } from "react"
 import { Cross1Icon } from "@radix-ui/react-icons"
+import ItemCountSelector from "./ItemCountSelector"
 
 interface Props {
   item: Item
 }
 export function CartItemDetail({ item }: Props) {
-  const { state, dispatch } = useCartContext()
-  const [itemsCount, setItemsCount] = useState(0)
-
-  useEffect(() => {
-    if (state.items[item.product.id]) {
-      setItemsCount(state.items[item.product.id].units)
-    }
-  }, [state])
-
-  const optsCount = useMemo(() => {
-    return [...Array(Math.ceil((itemsCount + 10) / 10) * 10)]
-  }, [itemsCount])
-
-  function handleUpdateItemCount(event: React.ChangeEvent<HTMLSelectElement>) {
-    const newCount = parseInt(event.target.value)
-    dispatch({
-      type: ActionTypes.UpdateItemCount,
-      payload: { ...item, units: newCount },
-    })
-  }
+  const { dispatch } = useCartContext()
 
   function handleRemoveFromCart() {
     dispatch({ type: ActionTypes.DeleteItem, payload: item.product })
@@ -35,27 +17,11 @@ export function CartItemDetail({ item }: Props) {
   return (
     <div className="w-full px-2 flex flex-row justify-between items-center">
       <div>
-        <h3>{item.product.title}</h3>
-        <span>{item.product.description}</span>
+        <h3 className="text-xl font-semibold">{item.product.title}</h3>
+        <p className="text-slate-500">{item.product.description}</p>
       </div>
       <div className="flex flex-row gap-2">
-        <label htmlFor={`${item.product.id}-count`}>
-          <select
-            id={`${item.product.id}-count`}
-            value={itemsCount}
-            onChange={handleUpdateItemCount}
-          >
-            {optsCount.map((i, idx) => {
-              if (idx !== 0) {
-                return (
-                  <option value={idx} key={idx}>
-                    {idx}
-                  </option>
-                )
-              }
-            })}
-          </select>
-        </label>
+        <ItemCountSelector item={item} />
         <button title="Remove from cart" onClick={handleRemoveFromCart}>
           <Cross1Icon />
         </button>

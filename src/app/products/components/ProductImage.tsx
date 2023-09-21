@@ -1,22 +1,26 @@
 "use client"
 
 import { CldImage } from "next-cloudinary"
+import Link from "next/link"
 interface ProductImageProps {
   url: string | null
   title: string
+  id: number
 }
-export default function ProductImage({ url, title }: ProductImageProps) {
+export default function ProductImage({ url, title, id }: ProductImageProps) {
   let tempUrl =
     "https://res.cloudinary.com/dintrgbvw/image/upload/v1695238530/sample.jpg"
   if (tempUrl && tempUrl.length) {
     return (
-      <CldImage
-        width="400"
-        height="600"
-        src={tempUrl}
-        sizes="100vw"
-        alt={title}
-      />
+      <Link href={`products/${id}`}>
+        <CldImage
+          width="400"
+          height="600"
+          src={tempUrl}
+          sizes="100vw"
+          alt={title}
+        />
+      </Link>
     )
   }
   return (
