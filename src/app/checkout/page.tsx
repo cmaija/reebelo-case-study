@@ -5,6 +5,7 @@ import { CartItemDetail } from "../components/CartItemDetail"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import AddressForm from "./components/AddressForm"
 import { useState } from "react"
+import { revalidatePath } from "next/cache"
 
 export default function Checkout() {
   const { state, dispatch } = useCartContext()
@@ -20,6 +21,7 @@ export default function Checkout() {
 
       dispatch({ type: ActionTypes.ClearCart, payload: null })
       setOrderSuccessful(true)
+      revalidatePath("/products")
     } catch (error) {
       console.error(error)
     }

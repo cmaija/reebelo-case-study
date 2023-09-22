@@ -52,12 +52,14 @@ enum OrderStatus {
 }
 
 model ProductsOnOrders {
-  @@id([productId, orderId])
+  id            Int @id @default(autoincrement())
 
   product       Product   @relation(fields: [productId], references: [id])
   productId     Int
   order         Order     @relation(fields: [orderId], references: [id])
   orderId       Int 
   productCount  Int
+  status        OrderStatus
+  updatedAt     DateTime  @updatedAt
   createdAt     DateTime  @default(now())
 }

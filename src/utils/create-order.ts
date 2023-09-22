@@ -32,15 +32,16 @@ export async function createOrder(orderParams: OrderDetails) {
       return acc + item.units
     }, 0)
 
-    await prisma.productsOnOrders.createMany({
-      data: orderedProducts.map((item) => {
-        return {
+    for (let orderedProduct of orderedProducts) {
+      await prisma.productsOnOrders.create({
+        data: {
           orderId: order.id,
-          productId: item.product.id,
+          productId: orderedProduct.product.id,
           productCount,
-        }
-      }),
-    })
+          status: order.status,
+        },
+      })
+    }
   } catch (error) {
     throw new Error(
       `Error creating order, error: ${(error as unknown as Error).message}`

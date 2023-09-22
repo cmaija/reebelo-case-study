@@ -12,7 +12,14 @@ export default function ProductDetails({ product }: Props) {
   const [itemsCount, setItemsCount] = useState(1)
   const { dispatch } = useCartContext()
   const optsCount = useMemo(() => {
-    return [...Array(Math.ceil((itemsCount + 2) / 10) * 10)]
+    return [
+      ...Array(
+        Math.min(
+          Math.ceil((itemsCount + 2) / 10) * 10,
+          product.unitsInStock + 1
+        )
+      ),
+    ]
   }, [itemsCount])
 
   function handleUpdateItemCount(event: React.ChangeEvent<HTMLSelectElement>) {

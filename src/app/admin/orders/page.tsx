@@ -1,65 +1,9 @@
-import { getOrders } from "@/utils/get-orders"
-
+import OrdersTable from "./OrdersTable"
 export default async function Orders() {
-  let orders = await getOrders()
-
-  const headers = [
-    {
-      id: "id",
-      title: "Order ID",
-    },
-    {
-      id: "name",
-      title: "Name",
-    },
-    {
-      id: "email",
-      title: "Email",
-    },
-    {
-      id: "address",
-      title: "Address",
-    },
-    {
-      id: "productCount",
-      title: "# Products",
-    },
-    {
-      id: "actions",
-      title: "",
-    },
-  ]
-
   return (
-    <div>
-      <h1>Manage Orders</h1>
-      <table>
-        <thead>
-          <tr>
-            {headers.map((header) => (
-              <th key={header.id} id={header.id}>
-                {header.title}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => (
-            <tr key={order.id}>
-              <td>{order.id}</td>
-              <td>{order.name}</td>
-              <td>{order.email}</td>
-              <td>{order.address}</td>
-              <td>{order.products.length}</td>
-              <td>
-                <button>View</button>
-                <button>Mark as Paid</button>
-                <button>Mark as Delivered</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="max-w-[1800px] w-4/5 mx-auto pt-6">
+      <h1 className="text-3xl font-bold mb-4">Manage Orders</h1>
+      <OrdersTable />
     </div>
   )
 }

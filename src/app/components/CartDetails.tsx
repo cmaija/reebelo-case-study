@@ -30,7 +30,12 @@ export default function CartDetails({ onGoToCheckout }: Props) {
         )}
       </div>
       <DialogFooter>
-        <DialogClose onClick={onGoToCheckout}>Checkout</DialogClose>
+        <DialogClose
+          disabled={!Object.values(state.items).length}
+          onClick={onGoToCheckout}
+        >
+          Checkout
+        </DialogClose>
       </DialogFooter>
     </DialogContent>
   )
