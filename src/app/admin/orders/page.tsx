@@ -1,4 +1,8 @@
-export default function Orders() {
+import { getOrders } from "@/utils/get-orders"
+
+export default async function Orders() {
+  let orders = await getOrders()
+
   const headers = [
     {
       id: "id",
@@ -39,6 +43,22 @@ export default function Orders() {
             ))}
           </tr>
         </thead>
+        <tbody>
+          {orders.map((order) => (
+            <tr>
+              <td>{order.id}</td>
+              <td>{order.name}</td>
+              <td>{order.email}</td>
+              <td>{order.address}</td>
+              <td>{order.products.length}</td>
+              <td>
+                <button>View</button>
+                <button>Mark as Paid</button>
+                <button>Mark as Delivered</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   )

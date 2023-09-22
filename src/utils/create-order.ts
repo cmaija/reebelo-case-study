@@ -28,12 +28,16 @@ export async function createOrder(orderParams: OrderDetails) {
       },
     })
 
+    let productCount = orderedProducts.reduce((acc, item) => {
+      return acc + item.units
+    }, 0)
+
     await prisma.productsOnOrders.createMany({
       data: orderedProducts.map((item) => {
         return {
           orderId: order.id,
           productId: item.product.id,
-          productCount: item.units,
+          productCount,
         }
       }),
     })
