@@ -14,7 +14,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
+interface Props {
+  handlePlaceOrder: (values: z.infer<typeof addressSchema>) => void
+}
 const addressSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string().email(),
   address1: z.string(),
   address2: z.string().optional(),
   city: z.string(),
@@ -24,19 +30,62 @@ const addressSchema = z.object({
   phoneNumber: z.string(),
 })
 
-export default function AddressForm() {
+export default function AddressForm({ handlePlaceOrder }: Props) {
   const form = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
   })
 
-  function onSubmit(values: z.infer<typeof addressSchema>) {
-    createOrder(values)
+  async function onSubmit(values: z.infer<typeof addressSchema>) {
+    handlePlaceOrder(values)
   }
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
+          defaultValue=""
+          name="firstName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>First Name</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          defaultValue=""
+          name="lastName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Last Name</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          defaultValue=""
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          defaultValue=""
           name="address1"
           render={({ field }) => (
             <FormItem>
@@ -50,6 +99,7 @@ export default function AddressForm() {
         />
         <FormField
           control={form.control}
+          defaultValue=""
           name="address2"
           render={({ field }) => (
             <FormItem>
@@ -63,6 +113,7 @@ export default function AddressForm() {
         />
         <FormField
           control={form.control}
+          defaultValue=""
           name="city"
           render={({ field }) => (
             <FormItem>
@@ -76,10 +127,11 @@ export default function AddressForm() {
         />
         <FormField
           control={form.control}
+          defaultValue=""
           name="state"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>City</FormLabel>
+              <FormLabel>State</FormLabel>
               <FormControl>
                 <Input placeholder="California" {...field} />
               </FormControl>
@@ -89,10 +141,11 @@ export default function AddressForm() {
         />
         <FormField
           control={form.control}
+          defaultValue=""
           name="country"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>City</FormLabel>
+              <FormLabel>Country</FormLabel>
               <FormControl>
                 <Input placeholder="USA" {...field} />
               </FormControl>
@@ -102,10 +155,11 @@ export default function AddressForm() {
         />
         <FormField
           control={form.control}
+          defaultValue=""
           name="postalCode"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>City</FormLabel>
+              <FormLabel>Zip/Postal Code</FormLabel>
               <FormControl>
                 <Input placeholder="94941" {...field} />
               </FormControl>
@@ -115,10 +169,11 @@ export default function AddressForm() {
         />
         <FormField
           control={form.control}
+          defaultValue=""
           name="phoneNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>City</FormLabel>
+              <FormLabel>Phone Number</FormLabel>
               <FormControl>
                 <Input placeholder="123-456-7890" {...field} />
               </FormControl>
@@ -126,7 +181,7 @@ export default function AddressForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Place Order</Button>
       </form>
     </Form>
   )

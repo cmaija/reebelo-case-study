@@ -55,6 +55,7 @@ export enum ActionTypes {
   DeleteItem = "DELETE_ITEM_BY_ID",
   Load = "LOAD_CART",
   UpdateItemCount = "UPDATE_ITEM_COUNT",
+  ClearCart = "CLEAR_CART",
 }
 
 type CartPayload = {
@@ -63,6 +64,7 @@ type CartPayload = {
   [ActionTypes.DeleteItem]: Product
   [ActionTypes.UpdateItemCount]: Item
   [ActionTypes.Load]: Cart
+  [ActionTypes.ClearCart]: null
 }
 
 export type CartActions = ActionMap<CartPayload>[keyof ActionMap<CartPayload>]
@@ -102,7 +104,10 @@ const cartReducer = (state: Cart, action: CartActions): Cart => {
 
     case ActionTypes.Load:
       const { items } = action.payload
-      return { items }
+      return { ...state, items }
+
+    case ActionTypes.ClearCart:
+      return { ...state, items: {} }
 
     case ActionTypes.UpdateItemCount:
       newState = structuredClone(state)
