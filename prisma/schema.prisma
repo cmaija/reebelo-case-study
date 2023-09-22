@@ -19,12 +19,12 @@ model Product {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   imageUrl         String?  @db.VarChar(255)
-  orders           Order[]
+  orders           ProductsOnOrders[]
 }
 
 model Order {
   id          Int         @id @default(autoincrement())
-  products    Product[]
+  products    ProductsOnOrders[]
   status      OrderStatus @default(RECIEVED)
   firstName   String      @db.VarChar(255)
   lastName    String      @db.VarChar(255)
@@ -49,4 +49,15 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+}
+
+model ProductsOnOrders {
+  @@id([productId, orderId])
+
+  product       Product   @relation(fields: [productId], references: [id])
+  productId     Int
+  order         Order     @relation(fields: [orderId], references: [id])
+  orderId       Int 
+  productCount  Int
+  createdAt     DateTime  @default(now())
 }

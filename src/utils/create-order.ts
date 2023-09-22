@@ -21,15 +21,21 @@ interface OrderDetails {
 export async function createOrder(orderParams: OrderDetails) {
   const { products: orderedProducts, ...rest } = orderParams
   let order: Order
-  console.log(orderParams)
   try {
     order = await prisma.order.create({
       data: {
         ...rest,
-        products: {
-          connect: orderedProducts.map((item) => ({ id: item.product.id })),
-        },
       },
+    })
+
+    await prisma.productsOnOrders.createMany({
+      data: orderedProducts.map((item) => {
+        return {
+          orderId: order.id,
+          productId: item.product.id,
+          productCount: item.units,
+        }
+      }),
     })
   } catch (error) {
     throw new Error(
