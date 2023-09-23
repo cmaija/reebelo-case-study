@@ -33,12 +33,7 @@ export default function EditProductModal({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild />
-      <DialogContent
-        onInteractOutside={(event) => {
-          event.preventDefault()
-        }}
-        className="max-h-[80vh] overflow-auto"
-      >
+      <DialogContent className="max-h-[80vh] overflow-auto">
         <>
           {product && (
             <div className="flex flex-col overflow-auto">

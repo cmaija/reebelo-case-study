@@ -44,10 +44,6 @@ export default function EditProductForm({
     product?.imageUrl || ""
   )
 
-  useEffect(() => {
-    console.log(product)
-  }, [])
-
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
   })
@@ -168,23 +164,6 @@ export default function EditProductForm({
               <FormMessage />
             </FormItem>
           )}
-        />
-        {product?.imageUrl && (
-          <CldImage
-            width="400"
-            height="600"
-            src={product.imageUrl}
-            sizes="100vw"
-            alt={product.title}
-          />
-        )}
-        <CldUploadButton
-          className=""
-          onUpload={(result, widget) => {
-            setImageResourceUrl(result?.info || "")
-            widget.close()
-          }}
-          uploadPreset="next-cloudinary-unsigned"
         />
         <Button type="button" onClick={handleSave}>
           {product && "id" in product ? "Update" : "Save"} Product

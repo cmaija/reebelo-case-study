@@ -23,10 +23,6 @@ export default function ActionsCell({ order, onSuccess }: Props) {
   const [editProductsModalOpen, setEditProductsModalOpen] = useState(false)
   const [deleteOrderModalOpen, setDeleteOrderModalOpen] = useState(false)
 
-  //TODO: implement updating table after updating order
-  function handleUpdateOrder(values: any) {
-    console.log("handleUpdateOrder", values)
-  }
   return (
     <>
       <DropdownMenu>

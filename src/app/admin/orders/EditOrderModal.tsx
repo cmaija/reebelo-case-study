@@ -34,23 +34,7 @@ export default function EditOrderModal({
   setOpen,
   onSuccess,
 }: Props) {
-  const [orderDetails, setOrderDetails] = useState<
-    Order | EditableOrderFields
-  >()
-
-  useEffect(() => {
-    if (open) {
-      fetch(`/api/order/${order.id}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      })
-        .then((response) => response.json())
-        .then((data) => setOrderDetails(data))
-    }
-  }, [open, order])
-
   function onOrderUpdated(updatedOrder: EditableOrderFields) {
-    setOrderDetails({ ...updatedOrder, id: order.id })
     onSuccess(updatedOrder)
   }
   return (
@@ -82,7 +66,7 @@ export default function EditOrderModal({
           </div>
         </div>
         <EditOrderForm
-          order={orderDetails}
+          order={order}
           orderId={order.id}
           handleUpdateOrder={onOrderUpdated}
         />

@@ -3,20 +3,18 @@
 import { CldImage } from "next-cloudinary"
 import Link from "next/link"
 interface ProductImageProps {
-  url: string | null
+  url?: string | null
   title: string
   id: number
 }
 export default function ProductImage({ url, title, id }: ProductImageProps) {
-  let tempUrl =
-    "https://res.cloudinary.com/dintrgbvw/image/upload/v1695238530/sample.jpg"
-  if (tempUrl && tempUrl.length) {
+  if (url && url.length) {
     return (
       <Link href={`products/${id}`}>
         <CldImage
           width="400"
-          height="600"
-          src={tempUrl}
+          height="353"
+          src={url}
           sizes="100vw"
           alt={title}
         />
@@ -24,8 +22,11 @@ export default function ProductImage({ url, title, id }: ProductImageProps) {
     )
   }
   return (
-    <div className="w-[960] h-[600] bg-slate-300" title={title}>
-      <span>?</span>
+    <div
+      className="w-[400px] h-[353px] min-h-600 bg-slate-200 flex items-center justify-center"
+      title={title}
+    >
+      <span className="text-6xl text-white">?</span>
     </div>
   )
 }

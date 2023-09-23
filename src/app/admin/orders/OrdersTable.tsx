@@ -95,7 +95,6 @@ export default function OrdersTable() {
 
   function onSuccess() {
     let paramOptions: OrderUrlParams = generateSearchParams({ sort, page })
-
     const params = new URLSearchParams(paramOptions)
     fetch("/api/order?" + params, {
       method: "GET",

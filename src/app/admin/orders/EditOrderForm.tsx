@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Order, OrderStatus } from "@prisma/client"
-import { useState } from "react"
+import React, { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { EditableOrderFields } from "./EditOrderModal"
 
@@ -56,7 +56,8 @@ export default function EditOrderForm({
     resolver: zodResolver(orderSchema),
   })
 
-  async function handleClick() {
+  async function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault()
     if (order) {
       setLoading(true)
       try {
@@ -281,9 +282,7 @@ export default function EditOrderForm({
             </FormItem>
           )}
         />
-        <Button loading={loading} onClick={handleClick}>
-          Update Order
-        </Button>
+        <Button onClick={handleClick}>Update Order</Button>
         <FormMessage>{error}</FormMessage>
       </form>
     </Form>

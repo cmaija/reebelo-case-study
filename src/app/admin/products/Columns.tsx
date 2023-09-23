@@ -29,7 +29,7 @@ export const columns = (
   },
   {
     accessorKey: "actions",
-    header: "Actions",
+    header: ({ column }) => <span className="w-full text-right">Actions</span>,
     cell: ({ row }) => {
       const product = row.original
       return (
