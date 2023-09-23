@@ -14,11 +14,16 @@ import ManageImage from "./ManageImage"
 interface Props {
   product: Product
   openProductModal: (id: number) => void
+  onSuccess: () => void
 }
-export default function ActionsCell({ product, openProductModal }: Props) {
+export default function ActionsCell({
+  product,
+  openProductModal,
+  onSuccess,
+}: Props) {
   return (
     <div className="flex flex-row items-center justify-end">
-      <ManageImage product={product} />
+      <ManageImage product={product} onSuccess={onSuccess} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">

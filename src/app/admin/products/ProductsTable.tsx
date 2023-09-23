@@ -135,7 +135,7 @@ export default function ProductTable() {
   if (products) {
     return (
       <>
-        <div>
+        <div className="w-full flex justify-end mb-3">
           <Button onClick={() => setAddModalOpen(true)}>Add Product</Button>
         </div>
         <EditProductModal
@@ -145,7 +145,7 @@ export default function ProductTable() {
           product={selectedProduct}
         />
         <DataTable
-          columns={columns(setEditModalOpen)}
+          columns={columns(setEditModalOpen, onSuccess)}
           data={products}
           onNext={handleNext}
           onLast={handleLast}
@@ -155,6 +155,13 @@ export default function ProductTable() {
       </>
     )
   } else {
-    return <span>There are no products yet! Click add product button</span>
+    return (
+      <div>
+        <span>There are no products yet! Click add product button</span>
+        <div>
+          <Button onClick={() => setAddModalOpen(true)}>Add Product</Button>
+        </div>
+      </div>
+    )
   }
 }

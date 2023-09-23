@@ -13,7 +13,7 @@ interface Props {
   onGoToCheckout: () => void
 }
 export default function CartDetails({ onGoToCheckout }: Props) {
-  const { state } = useCartContext()
+  const { state, totalCost } = useCartContext()
 
   return (
     <DialogContent>
@@ -22,9 +22,17 @@ export default function CartDetails({ onGoToCheckout }: Props) {
       </DialogHeader>
       <div className="flex flex-col gap-4 w-full">
         {Object.values(state.items).length ? (
-          Object.values(state.items).map((item: Item) => (
-            <CartItemDetail key={item.product.id} item={item} />
-          ))
+          <div>
+            {Object.values(state.items).map((item: Item) => (
+              <CartItemDetail key={item.product.id} item={item} />
+            ))}
+            <div className="mt-4 w-full flex flex-row items-center justify-between">
+              <h4 className="text-lg font-semibold"> Subtotal</h4>
+              <span className="text-xl font-semibold">
+                ${totalCost.toFixed(2)}
+              </span>
+            </div>
+          </div>
         ) : (
           <p>Cart is empty - add more items!</p>
         )}

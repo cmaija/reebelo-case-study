@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import CartDetails from "./CartDetails"
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { useRouter } from "next/navigation"
+import { ShoppingCart } from "lucide-react"
 
 export default function Cart() {
   const { itemsCount } = useCartContext()
@@ -22,7 +23,12 @@ export default function Cart() {
   return (
     <Dialog>
       <CartDetails onGoToCheckout={handleGoToCheckout} />
-      <DialogTrigger>Cart: {displayedCount}</DialogTrigger>
+      <DialogTrigger>
+        <div className="flex flex-row items-center gap-2">
+          <ShoppingCart size={24} />
+          <span className="text-lg min-w-[2.5rem]">{displayedCount}</span>
+        </div>
+      </DialogTrigger>
     </Dialog>
   )
 }

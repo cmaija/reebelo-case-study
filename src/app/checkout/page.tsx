@@ -4,12 +4,19 @@ import { ActionTypes, Item, useCartContext } from "@/context/Cart.context"
 import { CartItemDetail } from "../components/CartItemDetail"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import AddressForm from "./components/AddressForm"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { revalidatePath } from "next/cache"
 
 export default function Checkout() {
-  const { state, dispatch } = useCartContext()
+  const { state, dispatch, totalCost } = useCartContext()
   const [orderSuccessful, setOrderSuccessful] = useState(false)
+  const [items, setItems] = useState<Item[]>([])
+  const [cost, setCost] = useState(0)
+
+  useEffect(() => {
+    setItems(Object.values(state.items))
+    setCost(totalCost)
+  }, [state, totalCost])
   async function handlePlaceOrder(values: any) {
     try {
       const body = { ...values, products: Object.values(state.items) }
@@ -49,13 +56,19 @@ export default function Checkout() {
           >
             <CardHeader className="text-3xl font-bold">Your Order</CardHeader>
             <CardContent>
-              {Object.values(state.items).length ? (
-                Object.values(state.items).map((item: Item) => (
+              {items.length ? (
+                items.map((item: Item) => (
                   <CartItemDetail key={item.product.id} item={item} />
                 ))
               ) : (
                 <p>Cart is empty - add more items!</p>
               )}
+              <div className="mt-4 w-full flex flex-row items-center justify-between">
+                <h4 className="text-lg font-semibold"> Subtotal</h4>
+                <span className="text-xl font-semibold">
+                  ${cost.toFixed(2)}
+                </span>
+              </div>
             </CardContent>
           </Card>
         </>

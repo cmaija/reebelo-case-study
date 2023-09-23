@@ -22,6 +22,7 @@ interface CartContext {
   state: Cart
   dispatch: React.Dispatch<any>
   itemsCount: number
+  totalCost: number
 }
 
 const initialState: Cart = {
@@ -122,15 +123,23 @@ export const CartContext = createContext<{
   state: Cart
   dispatch: React.Dispatch<CartActions>
   itemsCount: number
+  totalCost: number
 }>({
   state: initialState,
   dispatch: () => null,
   itemsCount: 0,
+  totalCost: 0,
 })
 
 function countItems(cart: Cart) {
   return Object.values(cart.items).reduce((count: number, item: Item) => {
     return count + item.units
+  }, 0)
+}
+
+function sumTotalCost(cart: Cart) {
+  return Object.values(cart.items).reduce((total: number, item: Item) => {
+    return total + item.units * item.product.price
   }, 0)
 }
 
@@ -141,6 +150,7 @@ export const CartContextProvider = ({
 }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState, initializer)
   const itemsCount = useMemo(() => countItems(state), [state.items])
+  const totalCost = useMemo(() => sumTotalCost(state), [state])
 
   useEffect(() => {
     if (!state || typeof window === "undefined" || !window?.localStorage) return
@@ -148,7 +158,7 @@ export const CartContextProvider = ({
   }, [state])
 
   return (
-    <CartContext.Provider value={{ state, dispatch, itemsCount }}>
+    <CartContext.Provider value={{ state, dispatch, itemsCount, totalCost }}>
       {children}
     </CartContext.Provider>
   )

@@ -12,8 +12,9 @@ import { useEffect, useState } from "react"
 
 interface Props {
   product: Product
+  onSuccess: () => void
 }
-export default function ManageImage({ product }: Props) {
+export default function ManageImage({ product, onSuccess }: Props) {
   const [loading, setLoading] = useState(false)
   const [url, setUrl] = useState<string>(product?.imageUrl || "")
 
@@ -30,14 +31,17 @@ export default function ManageImage({ product }: Props) {
         body: JSON.stringify({ id: product.id, imageUrl: url }),
       })
         .then((response) => response.json())
-        .then((data) => setUrl(url))
+        .then((data) => {
+          setUrl(url)
+          onSuccess()
+        })
     } catch (error) {
       console.log(error)
     }
     setLoading(false)
   }
   return (
-    <div className="flex flex-row items-center gap-3">
+    <div className="flex flex-row items-center gap-4">
       {url && (
         <AlertDialog>
           <AlertDialogTrigger>View Product Image</AlertDialogTrigger>

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { ArrowDown, ArrowUp } from "lucide-react"
-import { useSearchParams, useRouter } from "next/navigation"
+import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useMemo } from "react"
 
 interface Props {
@@ -13,6 +13,7 @@ interface Props {
 export default function SortableHeader({ title, id }: Props) {
   const router = useRouter()
   const params = useSearchParams()
+  const path = usePathname()
   const sort = params.get("sort")
   const isSorted = useMemo(() => {
     if (!sort) return true
@@ -33,7 +34,7 @@ export default function SortableHeader({ title, id }: Props) {
       direction = dir === "desc" ? "asc" : "desc"
     }
     let newSort = `${id}:${direction}`
-    router.push("/admin/orders" + `?sort=${newSort}`)
+    router.push(path + `?sort=${newSort}`)
   }
   return (
     <Button variant="ghost" onClick={onSort}>

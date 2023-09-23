@@ -5,7 +5,8 @@ import SortableHeader from "../components/SortableHeader"
 import ActionsCell from "./ActionsCell"
 
 export const columns = (
-  onOpenProductModal: (id: number) => void
+  onOpenProductModal: (id: number) => void,
+  onSuccess: () => void
 ): ColumnDef<Product>[] => [
   {
     accessorKey: "id",
@@ -33,7 +34,11 @@ export const columns = (
     cell: ({ row }) => {
       const product = row.original
       return (
-        <ActionsCell openProductModal={onOpenProductModal} product={product} />
+        <ActionsCell
+          openProductModal={onOpenProductModal}
+          product={product}
+          onSuccess={onSuccess}
+        />
       )
     },
   },

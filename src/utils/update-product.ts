@@ -15,12 +15,22 @@ export async function updateProductQuantities(
   }
 }
 
-export async function updateProduct(product: Product) {
+export async function updateProduct(product: any) {
   let result
+  let { id, ...rest } = product
+  let productDTO = {
+    ...rest,
+  }
+  if (product.price) {
+    productDTO.price = parseInt(product.price)
+  }
+  if (product.unitsInStock) {
+    productDTO.price = parseInt(product.unitsInStock)
+  }
   try {
     result = await prisma.product.update({
       where: { id: product.id },
-      data: product,
+      data: productDTO,
     })
   } catch (error) {
     throw new Error(

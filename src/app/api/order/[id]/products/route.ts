@@ -1,10 +1,7 @@
 import { createProduct } from "@/utils/create-product"
 import { getOrderProducts } from "@/utils/get-order"
-import { getProduct } from "@/utils/get-product"
-import { getAllProducts } from "@/utils/get-products"
 import { updateOrderProducts } from "@/utils/update-order"
-import { updateProduct } from "@/utils/update-product"
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
   const product = await req.json()
