@@ -154,5 +154,7 @@ export default function productTable() {
         />
       </>
     )
+  } else {
+    return <span>There are no products yet! Click add product button</span>
   }
 }

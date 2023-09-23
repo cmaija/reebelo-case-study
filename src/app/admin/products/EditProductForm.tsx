@@ -12,11 +12,10 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { EditableProductFields } from "./EditProductModal"
 import { Product } from "@/lib/interfaces"
-import { CldImage, CldUploadButton } from "next-cloudinary"
 
 interface Props {
   handleUpdateProduct: (values: z.infer<typeof productSchema>) => void
@@ -40,10 +39,6 @@ export default function EditProductForm({
 }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<any>()
-  const [imageResourceUrl, setImageResourceUrl] = useState<string | object>(
-    product?.imageUrl || ""
-  )
-
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
   })
