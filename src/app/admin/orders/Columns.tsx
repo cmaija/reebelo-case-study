@@ -22,10 +22,6 @@ export const columns = (onSuccess: () => void): ColumnDef<Order>[] => [
     cell: ({ row }) => <DateTimeCell value={row.original.createdAt} />,
   },
   {
-    accessorKey: "productCount",
-    header: "# Products",
-  },
-  {
     accessorKey: "actions",
     header: "Actions",
     cell: ({ row }) => {
