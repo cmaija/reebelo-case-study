@@ -63,7 +63,7 @@ function generateSearchParams({
   return new URLSearchParams(params)
 }
 
-export default function productTable() {
+export default function ProductTable() {
   const [productModalOpen, setProductModalOpen] = useState(false)
   const [products, setProducts] = useState<Product[]>()
   const [selectedProduct, setSelectedProduct] = useState<Product>()

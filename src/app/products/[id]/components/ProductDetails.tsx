@@ -20,7 +20,7 @@ export default function ProductDetails({ product }: Props) {
         )
       ),
     ]
-  }, [itemsCount])
+  }, [itemsCount, product.unitsInStock])
 
   function handleUpdateItemCount(event: React.ChangeEvent<HTMLSelectElement>) {
     const newCount = parseInt(event.target.value)
