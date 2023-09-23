@@ -1,6 +1,5 @@
 import { Order } from "@prisma/client"
 import prisma from "../../lib/prisma"
-import { Product as OrderedProduct } from "@/lib/interfaces"
 import { updateProductQuantities } from "./update-product"
 import { Item } from "@/context/Cart.context"
 

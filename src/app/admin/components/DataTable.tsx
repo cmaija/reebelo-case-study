@@ -16,12 +16,15 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
+import React from "react"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   onNext: () => void
   onLast: () => void
+  canNext: boolean
+  canLast: boolean
 }
 
 export function DataTable<TData, TValue>({
@@ -29,6 +32,8 @@ export function DataTable<TData, TValue>({
   data,
   onNext,
   onLast,
+  canNext,
+  canLast,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -80,12 +85,22 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <div>
-        <Button onClick={onNext} size="icon">
-          {">"}
-        </Button>
-        <Button onClick={onLast} size="icon">
+      <div className="w-full flex flex-row items-center justify-end">
+        <Button
+          disabled={!canLast}
+          onClick={onLast}
+          variant="ghost"
+          size="icon"
+        >
           {"<"}
+        </Button>
+        <Button
+          disabled={!canNext}
+          onClick={onNext}
+          size="icon"
+          variant="ghost"
+        >
+          {">"}
         </Button>
       </div>
     </div>

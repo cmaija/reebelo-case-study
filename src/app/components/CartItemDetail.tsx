@@ -4,15 +4,22 @@ import { Cross1Icon } from "@radix-ui/react-icons"
 import ItemCountSelector from "./ItemCountSelector"
 import { useEffect, useState } from "react"
 import { Product } from "@/lib/interfaces"
+import { OrderProductItem } from "../admin/orders/EditOrderProductsModal"
 
 interface Props {
-  item: Item
+  item: Item | OrderProductItem
+  onDeleteItem?: (item: OrderProductItem) => void
+  onChangeItem?: (item: OrderProductItem) => void
 }
-export function CartItemDetail({ item }: Props) {
+export function CartItemDetail({ item, onChangeItem, onDeleteItem }: Props) {
   const { dispatch } = useCartContext()
 
   function handleRemoveFromCart() {
-    dispatch({ type: ActionTypes.DeleteItem, payload: item.product })
+    if (onDeleteItem && "orderProductId" in item) {
+      onDeleteItem(item)
+    } else {
+      dispatch({ type: ActionTypes.DeleteItem, payload: item.product })
+    }
   }
 
   const [product, setProduct] = useState<Product>()
@@ -27,7 +34,7 @@ export function CartItemDetail({ item }: Props) {
         <p className="text-slate-500">{product?.description}</p>
       </div>
       <div className="flex flex-row gap-2">
-        <ItemCountSelector item={item} />
+        <ItemCountSelector onChangeItem={onChangeItem} item={item} />
         <button title="Remove from cart" onClick={handleRemoveFromCart}>
           <Cross1Icon />
         </button>

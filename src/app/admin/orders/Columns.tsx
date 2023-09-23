@@ -1,13 +1,14 @@
 "use client"
 import { Order, OrderStatus } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
-import DateTimeCell from "./DateTimeCell"
+import DateTimeCell from "../components/DateTimeCell"
 import ActionsCell from "./ActionsCell"
+import SortableHeader from "../components/SortableHeader"
 
-export const columns: ColumnDef<Order>[] = [
+export const columns = (onSuccess: () => void): ColumnDef<Order>[] => [
   {
     accessorKey: "id",
-    header: "Order ID",
+    header: ({ column }) => <SortableHeader title="Order ID" id="id" />,
   },
   {
     accessorKey: "status",
@@ -15,7 +16,9 @@ export const columns: ColumnDef<Order>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Created Time",
+    header: ({ column }) => (
+      <SortableHeader title="Created At" id="createdAt" />
+    ),
     cell: ({ row }) => <DateTimeCell value={row.original.createdAt} />,
   },
   {
@@ -27,7 +30,7 @@ export const columns: ColumnDef<Order>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const order = row.original
-      return <ActionsCell order={order} />
+      return <ActionsCell onSuccess={onSuccess} order={order} />
     },
   },
 ]

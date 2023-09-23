@@ -13,3 +13,15 @@ export const getOrder = cache(async (id: number) => {
   })
   return order
 })
+
+export const getOrderProducts = cache(async (id: number) => {
+  const products = await prisma.order.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      products: { include: { product: true } },
+    },
+  })
+  return products
+})

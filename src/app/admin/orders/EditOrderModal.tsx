@@ -1,20 +1,46 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { getOrder } from "@/utils/get-order"
-import { Order, ProductsOnOrders } from "@prisma/client"
+import { Order, OrderStatus, ProductsOnOrders } from "@prisma/client"
 import { DialogTrigger } from "@radix-ui/react-dialog"
 import { useEffect, useState } from "react"
+import EditOrderForm from "./EditOrderForm"
 
 interface Props {
   order: Order
   open: boolean
   setOpen: (open: boolean) => void
+  onSuccess: (order: EditableOrderFields) => void
 }
-export default function EditOrderModal({ order, open, setOpen }: Props) {
-  const [orderDetails, setOrderDetails] = useState<ProductsOnOrders>()
+
+export interface EditableOrderFields {
+  status: OrderStatus
+  firstName: string
+  lastName: string
+  email: string
+  address1: string
+  address2?: string
+  city: string
+  state: string
+  country: string
+  postalCode: string
+  phoneNumber: string
+  details?: string
+  trackingNumber?: string
+  trackingCompany?: string
+}
+
+export default function EditOrderModal({
+  order,
+  open,
+  setOpen,
+  onSuccess,
+}: Props) {
+  const [orderDetails, setOrderDetails] = useState<
+    Order | EditableOrderFields
+  >()
 
   useEffect(() => {
     if (open) {
-      fetch("/api/order?" + new URLSearchParams({ id: order.id.toString() }), {
+      fetch(`/api/order/${order.id}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       })
@@ -22,6 +48,11 @@ export default function EditOrderModal({ order, open, setOpen }: Props) {
         .then((data) => setOrderDetails(data))
     }
   }, [open, order])
+
+  function onOrderUpdated(updatedOrder: EditableOrderFields) {
+    setOrderDetails({ ...updatedOrder, id: order.id })
+    onSuccess(updatedOrder)
+  }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild />
@@ -29,18 +60,13 @@ export default function EditOrderModal({ order, open, setOpen }: Props) {
         onInteractOutside={(event) => {
           event.preventDefault()
         }}
+        className="max-h-[80vh] overflow-auto"
       >
-        <div className="flex flex-col">
+        <div className="flex flex-col overflow-auto">
           <div className="flex flex-row justify-between">
             <h2 className="text-xl font-semibold">Order #{order.id}</h2>
           </div>
           <div className="flex flex-col mt-4">
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-500">Status</span>
-              <span className="text-sm font-semibold">
-                {order.status.toUpperCase()}
-              </span>
-            </div>
             <div className="flex flex-col">
               <span className="text-xs text-gray-500">Created</span>
               <span className="text-sm font-semibold">
@@ -53,9 +79,13 @@ export default function EditOrderModal({ order, open, setOpen }: Props) {
                 {new Date(order.updatedAt).toLocaleString()}
               </span>
             </div>
-            <span>{JSON.stringify(orderDetails)}</span>
           </div>
         </div>
+        <EditOrderForm
+          order={orderDetails}
+          orderId={order.id}
+          handleUpdateOrder={onOrderUpdated}
+        />
       </DialogContent>
     </Dialog>
   )

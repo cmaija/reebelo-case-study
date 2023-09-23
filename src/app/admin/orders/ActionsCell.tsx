@@ -7,18 +7,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Order, ProductsOnOrders } from "@prisma/client"
+import { Order } from "@prisma/client"
 import { MoreHorizontal } from "lucide-react"
 import EditOrderModal from "./EditOrderModal"
 import { useState } from "react"
+import EditOrderProductsModal from "./EditOrderProductsModal"
+import DeleteOrderModal from "./DeleteOrderModal"
 
 interface Props {
   order: Order
+  onSuccess: () => void
 }
-export default function ActionsCell({ order }: Props) {
+export default function ActionsCell({ order, onSuccess }: Props) {
   const [editOrderModalOpen, setEditOrderModalOpen] = useState(false)
   const [editProductsModalOpen, setEditProductsModalOpen] = useState(false)
+  const [deleteOrderModalOpen, setDeleteOrderModalOpen] = useState(false)
 
+  //TODO: implement updating table after updating order
+  function handleUpdateOrder(values: any) {
+    console.log("handleUpdateOrder", values)
+  }
   return (
     <>
       <DropdownMenu>
@@ -34,13 +42,32 @@ export default function ActionsCell({ order }: Props) {
             View/Edit Order
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>View/Edit Products</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setEditProductsModalOpen(true)}>
+            View/Edit Products
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setDeleteOrderModalOpen(true)}>
+            Delete Order
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <EditOrderModal
         open={editOrderModalOpen}
         setOpen={setEditOrderModalOpen}
         order={order}
+        onSuccess={onSuccess}
+      />
+      <EditOrderProductsModal
+        open={editProductsModalOpen}
+        setOpen={setEditProductsModalOpen}
+        id={order.id}
+        onSuccess={onSuccess}
+      />
+      <DeleteOrderModal
+        open={deleteOrderModalOpen}
+        setOpen={setDeleteOrderModalOpen}
+        id={order.id}
+        onSuccess={onSuccess}
       />
     </>
   )

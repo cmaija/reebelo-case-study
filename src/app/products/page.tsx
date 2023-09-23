@@ -1,9 +1,9 @@
-import { getProducts } from "@/utils/get-products"
+import { getInStockProducts } from "@/utils/get-products"
 import { Product } from "@/lib/interfaces"
 import ProductCard from "./components/ProductCard"
 
 export default async function Products() {
-  let products: Product[] = await getProducts()
+  let products: Product[] = await getInStockProducts()
   return (
     <div className="mx-auto flex flex-col w-full items-center">
       <h3>Browse Products</h3>

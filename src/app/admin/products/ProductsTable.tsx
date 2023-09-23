@@ -1,11 +1,13 @@
 "use client"
-import { Order } from "@prisma/client"
+import { Product } from "@/lib/interfaces"
 import { columns } from "./Columns"
 import { DataTable } from "../components/DataTable"
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import EditProductModal from "./EditProductModal"
 
-interface OrderUrlParams extends Record<any, any> {
+interface ProductUrlParams extends Record<any, any> {
   sortBy?: "id" | "createdAt"
   sortDir?: "desc" | "asc"
   take?: string | null
@@ -46,7 +48,7 @@ function generateSearchParams({
   take?: string | null
   page?: string | null
 }): URLSearchParams {
-  let params: OrderUrlParams = {}
+  let params: ProductUrlParams = {}
   let sortParams = generateSortParamsFromURLParams(sort)
   if (sortParams && sortParams.sortBy && sortParams.sortDir) {
     params.sortBy = sortParams.sortBy
@@ -61,60 +63,93 @@ function generateSearchParams({
   return new URLSearchParams(params)
 }
 
-export default function OrdersTable() {
-  const [orders, setOrders] = useState<Order[]>()
+export default function productTable() {
+  const [productModalOpen, setProductModalOpen] = useState(false)
+  const [products, setProducts] = useState<Product[]>()
+  const [selectedProduct, setSelectedProduct] = useState<Product>()
+
   const params = useSearchParams()
   const router = useRouter()
   const sort = params.get("sort")
   const page = params.get("page") || "1"
 
   useEffect(() => {
-    let paramOptions: OrderUrlParams = generateSearchParams({ sort, page })
+    let paramOptions: ProductUrlParams = generateSearchParams({ sort, page })
 
     const params = new URLSearchParams(paramOptions)
-    fetch("/api/order?" + params, {
+    fetch("/api/product?" + params, {
       method: "GET",
     })
       .then((res) => res.json())
       .then((data) => {
-        setOrders(data)
+        setProducts(data)
       })
   }, [sort, page])
 
   function handleNext() {
     let newParams = new URLSearchParams(params)
     newParams.set("page", (parseInt(page) + 1).toString())
-    router.push("/admin/orders?" + newParams.toString())
+    router.push("/admin/products?" + newParams.toString())
   }
 
   function handleLast() {
     let newParams = new URLSearchParams(params)
     newParams.set("page", (parseInt(page) - 1).toString())
-    router.push("/admin/orders?" + newParams.toString())
+    router.push("/admin/products?" + newParams.toString())
+  }
+
+  function setAddModalOpen(open: boolean) {
+    if (open) {
+      setSelectedProduct(undefined)
+      setProductModalOpen(true)
+    } else {
+      setProductModalOpen(false)
+    }
+  }
+
+  function setEditModalOpen(id: number) {
+    if (productModalOpen) {
+      setSelectedProduct(undefined)
+      setProductModalOpen(false)
+    } else {
+      setSelectedProduct(
+        products?.find((product: Product) => product.id === id)
+      )
+      setProductModalOpen(true)
+    }
   }
 
   function onSuccess() {
-    let paramOptions: OrderUrlParams = generateSearchParams({ sort, page })
+    let paramOptions: ProductUrlParams = generateSearchParams({ sort, page })
 
     const params = new URLSearchParams(paramOptions)
-    fetch("/api/order?" + params, {
+    fetch("/api/product?" + params, {
       method: "GET",
       cache: "no-store",
     })
       .then((res) => res.json())
       .then((data) => {
-        setOrders(data)
+        setProducts(data)
       })
   }
-  if (orders) {
+  if (products) {
     return (
       <>
+        <div>
+          <Button onClick={() => setAddModalOpen(true)}>Add Product</Button>
+        </div>
+        <EditProductModal
+          open={productModalOpen}
+          setOpen={setAddModalOpen}
+          onUpdate={onSuccess}
+          product={selectedProduct}
+        />
         <DataTable
-          columns={columns(onSuccess)}
-          data={orders}
+          columns={columns(setEditModalOpen)}
+          data={products}
           onNext={handleNext}
           onLast={handleLast}
-          canNext={orders.length === 10}
+          canNext={products.length === 10}
           canLast={parseInt(page) > 1}
         />
       </>

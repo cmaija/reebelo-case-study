@@ -1,19 +1,21 @@
 import { ActionTypes, Item, useCartContext } from "@/context/Cart.context"
 import { useEffect, useMemo, useState } from "react"
+import { OrderProductItem } from "../admin/orders/EditOrderProductsModal"
 
 interface Props {
-  item: Item
+  item: Item | OrderProductItem
+  onChangeItem?: (item: OrderProductItem) => void
 }
 
-export default function ItemCountSelector({ item }: Props) {
-  const { state, dispatch } = useCartContext()
+export default function ItemCountSelector({ item, onChangeItem }: Props) {
+  const { dispatch } = useCartContext()
   const [itemsCount, setItemsCount] = useState(0)
 
   useEffect(() => {
-    if (state.items[item.product.id]) {
-      setItemsCount(state.items[item.product.id].units)
+    if (item) {
+      setItemsCount(item.units)
     }
-  }, [state])
+  }, [item])
 
   const optsCount = useMemo(() => {
     return [...Array(Math.ceil((itemsCount + 2) / 10) * 10)]
@@ -21,10 +23,14 @@ export default function ItemCountSelector({ item }: Props) {
 
   function handleUpdateItemCount(event: React.ChangeEvent<HTMLSelectElement>) {
     const newCount = parseInt(event.target.value)
-    dispatch({
-      type: ActionTypes.UpdateItemCount,
-      payload: { ...item, units: newCount },
-    })
+    if (onChangeItem && "orderProductId" in item) {
+      onChangeItem({ ...item, units: newCount })
+    } else {
+      dispatch({
+        type: ActionTypes.UpdateItemCount,
+        payload: { ...item, units: newCount },
+      })
+    }
   }
   return (
     <label htmlFor={`${item.product.id}-count`}>
